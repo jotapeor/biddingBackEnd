@@ -31,11 +31,7 @@ public class EditalController {
 
     @GetMapping
     public List<EditalDTO> listaEdital(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.replace("Bearer ", "");
-        if (tokenService.validarToken(token)) {
-            return editalService.listaEdital();
-        } else {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Token inválido!");
-        }
+        return editalService.listaEdital(authHeader);
     }
+
 }

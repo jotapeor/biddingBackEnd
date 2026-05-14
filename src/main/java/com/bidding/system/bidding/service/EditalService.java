@@ -3,6 +3,7 @@ package com.bidding.system.bidding.service;
 import com.bidding.system.bidding.model.EditalDTO;
 import com.bidding.system.bidding.model.UserDTO;
 import com.bidding.system.bidding.repository.EditalRepository;
+import com.bidding.system.bidding.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,9 @@ public class EditalService {
 
     @Autowired
     private EditalRepository editalRepository;
+
+    @Autowired
+    private TokenService tokenService;
 
     public void novoEdital(EditalDTO edital, UserDTO usuarioLogado) {
         String message = "";
@@ -43,7 +47,13 @@ public class EditalService {
         }
     }
 
-    public List<EditalDTO> listaEdital() {
-        return editalRepository.listaEdital();
+    public List<EditalDTO> listaEdital(String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        if (!tokenService.validarToken(token)) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Token inválido!");
+        } else {
+            return editalRepository.listaEdital();
+        }
     }
+
 }
