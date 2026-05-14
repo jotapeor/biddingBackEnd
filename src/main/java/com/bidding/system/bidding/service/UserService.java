@@ -14,37 +14,41 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
+    @Autowired
+    private TokenService tokenService;
+
     public void register(UserDTO user) {
         String message = "";
-        if (user.getNome().equals("")) {
+        if (user.getNome().isEmpty()) {
             message = "Nome não preenchido";
-        } else if (user.getEmail().equals("")) {
+        } else if (user.getEmail().isEmpty()) {
             message = "E-mail não preenchido";
-        } else if (user.getSenha().equals("")) {
+        } else if (user.getSenha().isEmpty()) {
             message = "Senha não preenchida";
-        } else if (user.getRole().equals("")) {
+        } else if (user.getRole().isEmpty()) {
             user.setRole("FORNECEDOR");
         }
 
-        if (!message.equals("")) {
+        if (!message.isEmpty()) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(400), message);
         }
 
         repository.register(user);
     }
 
-    public UserDTO logar(UserRequestDTO user) {
+    public String logar(UserRequestDTO user) {
         String message = "";
-        if (user.getEmail().equals("")) {
+        if (user.getEmail().isEmpty()) {
             message = "E-mail não preenchido";
-        } else if (user.getSenha().equals("")) {
+        } else if (user.getSenha().isEmpty()) {
             message = "Senha não preenchida";
         }
 
-        if (!message.equals("")) {
+        if (!message.isEmpty()) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(400), message);
         }
 
-        return repository.login(user.getEmail(), user.getSenha());
+        UserDTO loggedData = repository.login(user.getEmail(), user.getSenha());
+        return tokenService.gerarToken(loggedData);
     }
 }

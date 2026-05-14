@@ -26,14 +26,16 @@ public class TokenService {
 
     public String gerarToken(UserDTO user) {
         if ((user.getId() == 0 || user.getId() == null) ||
-                user.getNome().equals("") ||
-                user.getEmail().equals("") ||
-                user.getSenha().equals("")) {
+                user.getNome().isEmpty() ||
+                user.getEmail().isEmpty() ||
+                user.getSenha().isEmpty()) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(400), "Um ou mais campos faltantes");
         }
         return Jwts.builder()
                 .subject(user.getNome())
-                .claim("usuario", user)
+                .claim("id", user.getId())
+                .claim("nome", user.getNome())
+                .claim("role", user.getRole())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 3000000))
                 .signWith(getSignKey())
@@ -47,9 +49,10 @@ public class TokenService {
                 .parseSignedClaims(token)
                 .getPayload();
 
-        UserDTO user = claims.get("usuario", UserDTO.class);
-
+        UserDTO user = new UserDTO();
+        user.setId(claims.get("id", Long.class));
+        user.setNome(claims.get("nome", String.class));
+        user.setRole(claims.get("role", String.class));
         return user;
     }
-
 }

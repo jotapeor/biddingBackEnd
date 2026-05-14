@@ -21,7 +21,6 @@ public class UserRepository {
             stmt.setString(2, user.getEmail());
             stmt.setString(3, user.getSenha());
             stmt.setString(4, user.getRole());
-            stmt.executeUpdate();
 
             int AffectedRows = stmt.executeUpdate();
             if (AffectedRows == 0) {
@@ -48,6 +47,7 @@ public class UserRepository {
                 user.setId(rs.getLong("id"));
                 user.setNome(rs.getString("nome"));
                 user.setEmail(rs.getString("email"));
+                user.setSenha(rs.getString("senha"));
                 user.setRole(rs.getString("role"));
             }
         } catch (SQLException e) {
