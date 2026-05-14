@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @Service
 public class EditalService {
 
@@ -39,5 +41,9 @@ public class EditalService {
             throw new ResponseStatusException(HttpStatusCode.valueOf(500),
                     "Erro ao criar edital");
         }
+    }
+
+    public List<EditalDTO> listaEdital() {
+        return editalRepository.listaEdital();
     }
 }

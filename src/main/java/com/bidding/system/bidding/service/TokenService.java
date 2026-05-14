@@ -2,6 +2,7 @@ package com.bidding.system.bidding.service;
 
 import com.bidding.system.bidding.model.UserDTO;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -54,5 +55,21 @@ public class TokenService {
         user.setNome(claims.get("nome", String.class));
         user.setRole(claims.get("role", String.class));
         return user;
+    }
+
+    public boolean validarToken(String token) {
+        try {
+            // Cria um parser JWT com a chave secreta para validação
+            Jwts.parser()
+                    .setSigningKey(getSignKey())
+                    .build()
+                    // Analisa e valida o token (lança exceção se inválido ou expirado)
+                    .parseClaimsJws(token);
+            // Se chegou aqui, o token é válido
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            // Se qualquer exceção ocorrer, o token é inválido ou expirou
+            return false;
+        }
     }
 }
