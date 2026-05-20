@@ -1,13 +1,13 @@
 package com.bidding.system.bidding.controller;
 
 import com.bidding.system.bidding.model.EditalDTO;
+import com.bidding.system.bidding.model.LanceDTO;
 import com.bidding.system.bidding.model.UserDTO;
 import com.bidding.system.bidding.service.EditalService;
+import com.bidding.system.bidding.service.LanceService;
 import com.bidding.system.bidding.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -21,6 +21,9 @@ public class EditalController {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private LanceService lanceService;
+
     @PostMapping("/criar")
     public String criarEdital(@RequestBody EditalDTO edital, @RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
@@ -31,7 +34,14 @@ public class EditalController {
 
     @GetMapping
     public List<EditalDTO> listaEdital(@RequestHeader("Authorization") String authHeader) {
-        return editalService.listaEdital(authHeader);
+        String token = authHeader.replace("Bearer ", "");
+        return editalService.listaEdital(token);
     }
 
+    @PostMapping("/{id}/lances")
+    public String novoLance(@PathVariable Long id, @RequestHeader("Authorization") String authHeader, @RequestBody LanceDTO lance) {
+        String token = authHeader.replace("Bearer ", "");
+        lanceService.novoLance(id, lance, token);
+        return "Lance feito com sucesso!";
+    }
 }
