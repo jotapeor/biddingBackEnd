@@ -48,12 +48,10 @@ public class EditalService {
     }
 
     public List<EditalDTO> listaEdital(String authHeader) {
-        String token = authHeader.replace("Bearer ", "");
-        if (!tokenService.validarToken(token)) {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Token inválido!");
-        } else {
+        if (tokenService.validarToken(authHeader)) {
             return editalRepository.listaEdital();
+        } else {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Token inválido!");
         }
     }
-
 }

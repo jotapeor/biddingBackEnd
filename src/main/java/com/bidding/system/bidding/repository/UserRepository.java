@@ -14,9 +14,7 @@ public class UserRepository {
     public void register(UserDTO user) {
         try {
             Connection conn = Conexao.conectar();
-            PreparedStatement stmt = null;
-
-            stmt = conn.prepareStatement("insert into usuarios (nome, email, senha, role) values (?, ?, ?, ?)");
+            PreparedStatement stmt = conn.prepareStatement("insert into usuarios (nome, email, senha, role) values (?, ?, ?, ?)");
             stmt.setString(1, user.getNome());
             stmt.setString(2, user.getEmail());
             stmt.setString(3, user.getSenha());
@@ -35,13 +33,10 @@ public class UserRepository {
         UserDTO user = new UserDTO();
         try {
             Connection conn = Conexao.conectar();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            stmt = conn.prepareStatement("select * from usuarios where email = ? and senha = ?");
+            PreparedStatement stmt = conn.prepareStatement("select * from usuarios where email = ? and senha = ?");
             stmt.setString(1, email);
             stmt.setString(2, senha);
-            rs = stmt.executeQuery();
+            ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 user.setId(rs.getLong("id"));

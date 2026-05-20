@@ -16,9 +16,7 @@ public class EditalRepository {
     public int novoEdital(EditalDTO edital) {
         try {
             Connection conn = Conexao.conectar();
-            PreparedStatement stmt = null;
-
-            stmt = conn.prepareStatement("insert into editais (titulo, descricao, data_fechamento, status) values (?, ?, ?, ?)");
+            PreparedStatement stmt = conn.prepareStatement("insert into editais (titulo, descricao, data_fechamento, status) values (?, ?, ?, ?)");
             stmt.setString(1, edital.getTitulo());
             stmt.setString(2, edital.getDescricao());
             stmt.setDate(3, edital.getData_fechamento());
@@ -36,9 +34,7 @@ public class EditalRepository {
         List<EditalDTO> listaEdital = new ArrayList<>();
         try {
             Connection conn = Conexao.conectar();
-            PreparedStatement stmt = null;
-
-            stmt = conn.prepareStatement("select * from editais");
+            PreparedStatement stmt = conn.prepareStatement("select * from editais");
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -53,7 +49,24 @@ public class EditalRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return listaEdital;
+    }
+
+    public EditalDTO getById(Long id) {
+        EditalDTO edital = new EditalDTO();
+        try {
+            Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement("select data_fechamento, status from editais where id = ?");
+            stmt.setLong(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                edital.setData_fechamento(rs.getDate("data_fechamento"));
+                edital.setStatus(rs.getString("status"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return edital;
     }
 }
