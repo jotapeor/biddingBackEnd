@@ -24,7 +24,6 @@ public class UserController {
 
     @PostMapping("/logar")
     public String logar(@RequestBody UserRequestDTO user) {
-        String token = userService.logar(user);
-        return token;
+        return userService.logar(user);
     }
 }
