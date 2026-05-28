@@ -1,19 +1,22 @@
 package com.bidding.system.bidding.model;
 
-import java.sql.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.time.LocalDateTime;
 
 public class LanceDTO {
 
     private Long id;
     private double valor;
-    private Date data_lance;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime data_lance;
     private Long id_edital;
     private Long id_usuario;
 
     public LanceDTO() {
     }
 
-    public LanceDTO(Long id, double valor, Date data_lance, Long id_edital, Long id_usuario) {
+    public LanceDTO(Long id, double valor, LocalDateTime data_lance, Long id_edital, Long id_usuario) {
         this.id = id;
         this.valor = valor;
         this.data_lance = data_lance;
@@ -37,11 +40,11 @@ public class LanceDTO {
         this.valor = valor;
     }
 
-    public Date getData_lance() {
+    public LocalDateTime getData_lance() {
         return data_lance;
     }
 
-    public void setData_lance(Date data_lance) {
+    public void setData_lance(LocalDateTime data_lance) {
         this.data_lance = data_lance;
     }
 

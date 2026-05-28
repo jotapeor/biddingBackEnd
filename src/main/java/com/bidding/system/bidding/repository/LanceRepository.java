@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 @Repository
 public class LanceRepository {
@@ -15,7 +16,7 @@ public class LanceRepository {
             Connection conn = Conexao.conectar();
             PreparedStatement stmt = conn.prepareStatement("insert into lances (valor, data_lance, id_edital, id_usuario) values (?, ?, ?, ?)");
             stmt.setDouble(1, lance.getValor());
-            stmt.setDate(2, lance.getData_lance());
+            stmt.setTimestamp(2, Timestamp.valueOf(lance.getData_lance()));
             stmt.setLong(3, lance.getId_edital());
             stmt.setLong(4, lance.getId_usuario());
 
