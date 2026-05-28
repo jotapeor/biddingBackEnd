@@ -3,13 +3,14 @@ package com.bidding.system.bidding.service;
 import com.bidding.system.bidding.model.EditalDTO;
 import com.bidding.system.bidding.model.UserDTO;
 import com.bidding.system.bidding.repository.EditalRepository;
-import com.bidding.system.bidding.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EditalService {
@@ -47,11 +48,29 @@ public class EditalService {
         }
     }
 
-    public List<EditalDTO> listaEdital(String authHeader) {
-        if (tokenService.validarToken(authHeader)) {
-            return editalRepository.listaEdital();
-        } else {
+    public List<EditalDTO> listaEdital(String authHeader, boolean urgente) {
+        if (!tokenService.validarToken(authHeader)) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(401), "Token inválido!");
         }
+
+        List<EditalDTO> editais = editalRepository.listaEdital();
+
+        if (!urgente) {
+            return editais;
+        }
+
+        LocalDateTime agora = LocalDateTime.now();
+        LocalDateTime limite = agora.plusHours(48);
+
+        return editais.stream()
+                .filter(edital -> "ABERTO".equalsIgnoreCase(edital.getStatus()))
+                .filter(edital -> edital.getData_fechamento() != null)
+                .filter(edital -> {
+                    LocalDateTime fechamento = edital.getData_fechamento();
+
+                    return fechamento.isAfter(agora)
+                            && fechamento.isBefore(limite);
+                })
+                .collect(Collectors.toList());
     }
 }

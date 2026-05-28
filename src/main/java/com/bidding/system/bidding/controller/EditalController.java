@@ -33,9 +33,12 @@ public class EditalController {
     }
 
     @GetMapping
-    public List<EditalDTO> listaEdital(@RequestHeader("Authorization") String authHeader) {
+    public List<EditalDTO> listaEdital(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestParam(value = "urgente", required = false, defaultValue = "false") boolean urgente
+    ) {
         String token = authHeader.replace("Bearer ", "");
-        return editalService.listaEdital(token);
+        return editalService.listaEdital(token, urgente);
     }
 
     @PostMapping("/{id}/lances")
